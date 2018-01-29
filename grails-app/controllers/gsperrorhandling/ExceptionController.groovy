@@ -7,10 +7,13 @@ class ExceptionController {
         def anyException
         //In Grails Doc, this is suggested way to grab exception:
         //http://docs.grails.org/latest/guide/theWebLayer.html#mappingToResponseCodes
-        anyException = request.exception
-        if(request.exception.cause)
-        {
-            //it will blow up there ^ and a Tomcat error page is rendered
+        //anyException = request.exception
+        if(request.exception && Throwable.isInstance(request.exception)){
+            anyException =  request.exception
+        }else if (request.getAttribute('javax.servlet.error.exception')){
+            anyException = request.getAttribute('javax.servlet.error.exception')
+        }else{
+            anyException = "An exception has occured."
         }
         return [anyException:anyException]
     }
